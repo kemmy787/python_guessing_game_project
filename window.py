@@ -191,8 +191,7 @@ def draw_board(screen, game, selected_unit, font):
             position = (x_coordinate, y_coordinate)
             resource = game.game_map.get_resource_at(position)
             if resource is not None:
-                pygame.draw.circle(screen, RESOURCE_COLORS[resource.resource_type], cell.center, 17)
-                draw_centered_text(screen, font, resource.resource_type[0].upper(), cell.center)
+                draw_resource(screen, resource, cell, font)
 
             unit = game.game_map.get_unit_at(position)
             if unit is not None:
@@ -204,6 +203,22 @@ def draw_board(screen, game, selected_unit, font):
                 draw_centered_text(screen, font, unit.name[0].upper(), cell.center)
                 if unit is selected_unit:
                     pygame.draw.circle(screen, (255, 244, 181), cell.center, 28, 3)
+
+
+def draw_resource(screen, resource, cell, font):
+    """Draw a resource node with its type marker and remaining amount."""
+    pygame.draw.circle(
+        screen,
+        RESOURCE_COLORS[resource.resource_type],
+        cell.center,
+        17,
+    )
+    draw_centered_text(screen, font, resource.resource_type[0].upper(), cell.center)
+
+    amount_surface = font.render(str(resource.amount), True, TEXT)
+    amount_rect = amount_surface.get_rect(bottomright=cell.inflate(-8, -8).bottomright)
+    pygame.draw.rect(screen, BACKGROUND, amount_rect.inflate(6, 4), border_radius=3)
+    screen.blit(amount_surface, amount_rect)
 
 
 def draw_text(screen, font, text, x_position, y_position, color=TEXT):
